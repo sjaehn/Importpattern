@@ -1,0 +1,158 @@
+@prefix atom: <http://lv2plug.in/ns/ext/atom#> .
+@prefix lv2: <http://lv2plug.in/ns/lv2core#> .
+@prefix pset: <http://lv2plug.in/ns/ext/presets#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix state: <http://lv2plug.in/ns/ext/state#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<>
+	a pset:Preset ;
+	lv2:appliesTo <https://www.jahnichen.de/plugins/lv2/BSEQuencer> ;
+	rdfs:label "@@project_name@@" ;
+	lv2:port [
+		lv2:symbol "autoplay_beats_per_bar" ;
+		pset:value @@beats_per_bar@@
+	] , [
+		lv2:symbol "autoplay_bpm" ;
+		pset:value @@bpm@@
+	] , [
+		lv2:symbol "base" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "ch1_midi_channel" ;
+		pset:value 10.0
+	] , [
+		lv2:symbol "ch1_note_offset" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "ch1_pitch" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "ch1_velocity" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "ch2_midi_channel" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "ch2_note_offset" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "ch2_pitch" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "ch2_velocity" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "ch3_midi_channel" ;
+		pset:value 2.0
+	] , [
+		lv2:symbol "ch3_note_offset" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "ch3_pitch" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "ch3_velocity" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "ch4_midi_channel" ;
+		pset:value 3.0
+	] , [
+		lv2:symbol "ch4_note_offset" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "ch4_pitch" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "ch4_velocity" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "midi_in" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "mode" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "nr_of_steps" ;
+		pset:value @@nr_of_steps@@
+	] , [
+		lv2:symbol "octave" ;
+		pset:value 4.0
+	] , [
+		lv2:symbol "on_key" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "play" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "root" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "scale" ;
+		pset:value 16.0
+	] , [
+		lv2:symbol "selection_channel" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "selection_duration" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "selection_duration_rand" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "selection_gate_rand" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "selection_pitch_note" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "selection_pitch_note_rand" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "selection_pitch_octave" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "selection_pitch_octave_rand" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "selection_velocity" ;
+		pset:value 1.0
+	] , [
+		lv2:symbol "selection_velocity_rand" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "signature" ;
+		pset:value 0.0
+	] , [
+		lv2:symbol "steps_per" ;
+		pset:value @@steps_per_beat@@
+	] ;
+	state:state [
+		<https://www.jahnichen.de/plugins/lv2/BSEQuencer#STATEpad> """Matrix data:
+@@pattern@@
+""" ;
+		<https://www.jahnichen.de/plugins/lv2/BSEQuencer#STATEscales> """Scale data:
+id:14;
+nm:"@@project_name@@";
+el:@@instrument_codes@@
+as:@@instrument_names@@
+sc:0;1;2;3;4;5;6;7;8;9;10;11;
+id:15;
+nm:"User scale 2";
+el:0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;
+as:"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";
+sc:0;1;2;3;4;5;6;7;8;9;10;11;
+id:16;
+nm:"User scale 3";
+el:0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;
+as:"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";
+sc:0;1;2;3;4;5;6;7;8;9;10;11;
+id:17;
+nm:"User scale 4";
+el:0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;
+as:"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";
+sc:0;1;2;3;4;5;6;7;8;9;10;11;
+"""
+	] .
+
