@@ -29,6 +29,7 @@ Format: `symbol=value`
 
 ## Resources
 ### https://github.com/lvm/tidal-drum-patterns
-Thanks to LVM.
+Thanks to LVM. This repository contains almost 500 patterns. Almost all are compatible to B.SEQuencer.
+
 1. Clone or download https://github.com/lvm/tidal-drum-patterns
-2. `python importpattern.py prefix=LVM_ path/to/tidal-drum-patterns/Sound/Tidal/Drum/*.hs ~/.lv2`
+2. `python importpattern.py prefix=LVM_ "path/to/tidal-drum-patterns/Sound/Tidal/Drum/*.hs" ~/.lv2`
