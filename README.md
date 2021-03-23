@@ -26,3 +26,9 @@ Format: `symbol=value`
 `bps`         Beats per second (default=90)
 
 `ab,bd,sn,...` Re-assign instrument symbols to a new code or a new name
+
+## Resources
+### https://github.com/lvm/tidal-drum-patterns
+Thanks to LVM.
+1. Clone or download https://github.com/lvm/tidal-drum-patterns
+2. `python importpattern.py prefix=LVM_ path/to/tidal-drum-patterns/Sound/Tidal/Drum/*.hs ~/.lv2`
