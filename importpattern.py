@@ -64,9 +64,10 @@ instruments = [Instrument("ab", "Ac. Bass", 35, []),
 
 
 class Preset:
-    def __init__(self, project_name, target_dir, lines, bpm):
+    def __init__(self, project_name, target_dir, lines, bpm, channel):
         self.project = project_name
         self.bpm = bpm
+        self.channel = channel
         self.beats_per_bar = None
         self.nr_of_steps = None
         self.steps_per_beat = None
@@ -204,6 +205,7 @@ class Preset:
                 lines[i] = lines[i].replace("@@beats_per_bar@@", "{:.1f}".format(self.beats_per_bar))
                 lines[i] = lines[i].replace("@@steps_per_beat@@", "{:.1f}".format(self.steps_per_beat))
                 lines[i] = lines[i].replace("@@bpm@@", "{:.1f}".format(self.bpm))
+                lines[i] = lines[i].replace("@@channel@@", "{:.1f}".format(self.channel))
                 lines[i] = lines[i].replace("@@instrument_codes@@", instrument_codes)
                 lines[i] = lines[i].replace("@@instrument_names@@", instrument_names)
         return lines
@@ -331,6 +333,7 @@ def print_help():
 def main():
     bpm = 90.0
     prefix = ""
+    channel = 10
     source_names = None
     target = ""
 
@@ -356,6 +359,13 @@ def main():
 
             elif ls == "prefix":
                 prefix = rs
+                param = True
+
+            if ls == "channel":
+                try:
+                    channel = int(rs)
+                except ValueError:
+                    print("Invalid value for channel.")
                 param = True
 
             else:
@@ -392,7 +402,7 @@ def main():
         # Read and parse source file
         print("Read", source_name)
         lines = read_file(source_name)
-        preset = Preset(project_name, target_path, lines, bpm)
+        preset = Preset(project_name, target_path, lines, bpm, channel)
         if (preset.beats_per_bar is None) or (preset.nr_of_steps is None) or (preset.steps_per_beat is None) or (not preset.pattern):
             print("")
             continue
