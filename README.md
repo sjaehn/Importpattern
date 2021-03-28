@@ -24,13 +24,16 @@ python importpattern.py [options] [parameters] source_file [target_dir]")
 Format: `symbol=value`
 
 #### Symbols
-`prefix`      Prefix added to the target name
-
-`bps`         Beats per second (default=90)
-
-`channel`     Midi channel (default=10)
-
-`ab,bd,sn,...` Re-assign instrument symbols to a new code or a new name
+|  |  |
+| --- | --- |
+| `prefix` | Prefix added to the target name |
+| `bps` | Beats per second (default=1.5) |
+| `channel` | Midi channel (default=10) |
+| `velocity` | MIDI note velocity factor (default=1.0) |
+| `accent` | Factor for accented notes (default=1.5) |
+| `mode` | 1 = autoplay, 2 = host & MIDI controlled, 3 = host controlled (default=1) |
+| `on_key` | Option for MIDI controlled mode. 0 = Restart, 1 = restart and sync 2 = continue (default=0) | 
+| `ab,bd,sn,...` | Re-assign instrument symbols to a new code or a new name |
 
 ## Resources
 ### https://github.com/lvm/tidal-drum-patterns

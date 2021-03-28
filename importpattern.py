@@ -4,6 +4,68 @@ import os
 import re
 import glob
 
+bpm = 90.0
+accent = 1.5
+
+
+class Parameter:
+    def __init__(self, symbol, value, min, max, typ="str", func=None):
+        self.symbol = symbol
+        self.value = value
+        self.min = min
+        self.max = max
+        self.typ = typ
+        self.func = func
+
+    def set(self, value):
+        if self.typ == "float":
+            try:
+                f = float(value)
+                if (f >= self.min) and (f <= self.max):
+                    self.value = f
+                else:
+                    print("Invalid parameter for", self.symbol)
+                    return
+            except ValueError:
+                print("Invalid parameter for", self.symbol)
+                return
+
+        elif self.typ == "int":
+            try:
+                i = int(value)
+                if (i >= self.min) and (i <= self.max):
+                    self.value = i
+                else:
+                    print("Invalid parameter for", self.symbol)
+                    return
+            except ValueError:
+                print("Invalid parameter for", self.symbol)
+                return
+        else:
+            self.value = value
+
+        if self.func is not None:
+            x = self.value
+            exec(self.func)
+
+
+parameters = [Parameter("bps", 1.5, 1.0 / 60.0, 5.0, "float", "global bpm; bpm = 60.0 * x"),
+              Parameter("prefix", "", 0, 0, "str"),
+              Parameter("channel", 10, 1, 16, "int"),
+              Parameter("velocity", 1.0, 0.0, 2.0, "float"),
+              Parameter("accent", 1.5, 0.0, 2.0, "float", "global accent; accent = x"),
+              Parameter("mode", 1, 1, 3, "int"),
+              Parameter("on_key", 0, 0, 2, "int")
+              ]
+
+
+def get_parameter(symbol):
+    symbol_id = next((i for i in range(len(parameters)) if parameters[i].symbol == symbol), None)
+    if symbol_id is not None:
+        return parameters[symbol_id].value
+    else:
+        return None
+
 
 class Instrument:
     def __init__(self, symbol, name, code, data):
@@ -64,10 +126,9 @@ instruments = [Instrument("ab", "Ac. Bass", 35, []),
 
 
 class Preset:
-    def __init__(self, project_name, target_dir, lines, bpm, channel):
+    def __init__(self, project_name, target_dir, lines):
         self.project = project_name
         self.bpm = bpm
-        self.channel = channel
         self.beats_per_bar = None
         self.nr_of_steps = None
         self.steps_per_beat = None
@@ -104,7 +165,7 @@ class Preset:
                         if c == '0':
                             self.ac.append(1)
                         else:
-                            self.ac.append(1.5)
+                            self.ac.append(accent)
 
                 else:
                     for i in range(len(instruments)):
@@ -205,7 +266,10 @@ class Preset:
                 lines[i] = lines[i].replace("@@beats_per_bar@@", "{:.1f}".format(self.beats_per_bar))
                 lines[i] = lines[i].replace("@@steps_per_beat@@", "{:.1f}".format(self.steps_per_beat))
                 lines[i] = lines[i].replace("@@bpm@@", "{:.1f}".format(self.bpm))
-                lines[i] = lines[i].replace("@@channel@@", "{:.1f}".format(self.channel))
+                lines[i] = lines[i].replace("@@channel@@", "{:.1f}".format(get_parameter("channel")))
+                lines[i] = lines[i].replace("@@velocity@@", "{:.1f}".format(get_parameter("velocity")))
+                lines[i] = lines[i].replace("@@mode@@", "{:.1f}".format(get_parameter("mode")))
+                lines[i] = lines[i].replace("@@on_key@@", "{:.1f}".format(get_parameter("on_key")))
                 lines[i] = lines[i].replace("@@instrument_codes@@", instrument_codes)
                 lines[i] = lines[i].replace("@@instrument_names@@", instrument_names)
         return lines
@@ -326,14 +390,18 @@ def print_help():
     print("    Format: symbol=value")
     print("    Symbols:")
     print("        prefix      Prefix added to the target name")
-    print("        bps         Beats per second (default=90)")
+    print("        bps         Beats per second (default=1.5)")
+    print("        channel     Midi channel(default=10)")
+    print("        velocity    MIDI note velocity factor(default=1.0)")
+    print("        accent      Factor for accented notes(default=1.5)")
+    print("        mode        1 = autoplay, 2 = host & MIDI controlled, ")
+    print("                    3 = host controlled(default=1)")
+    print("        on_key      Option for MIDI controlled mode.0 = Restart, ")
+    print("                    1 = restart and sync, 2 = continue (default=0)")
     print("        ab,bd,...   Re-assign instrument symbols to a new code or a new name")
 
 
 def main():
-    bpm = 90.0
-    prefix = ""
-    channel = 10
     source_names = None
     target = ""
 
@@ -350,22 +418,9 @@ def main():
             ls = arg_str[:ep]
             rs = arg_str[ep + 1:]
 
-            if ls == "bps":
-                try:
-                    bpm = float(rs) * 60.0
-                except ValueError:
-                    print("Invalid value for bps.")
-                param = True
-
-            elif ls == "prefix":
-                prefix = rs
-                param = True
-
-            if ls == "channel":
-                try:
-                    channel = int(rs)
-                except ValueError:
-                    print("Invalid value for channel.")
+            symbol_id = next((i for i in range(len(parameters)) if parameters[i].symbol == ls), None)
+            if symbol_id is not None:
+                parameters[symbol_id].set(rs)
                 param = True
 
             else:
@@ -393,7 +448,7 @@ def main():
         return
 
     for source_name in source_names:
-        project_name = prefix + os.path.splitext(os.path.basename(source_name))[0]
+        project_name = get_parameter("prefix") + os.path.splitext(os.path.basename(source_name))[0]
         target_path = target
         if target_path != "":
             target_path += "/"
@@ -402,8 +457,9 @@ def main():
         # Read and parse source file
         print("Read", source_name)
         lines = read_file(source_name)
-        preset = Preset(project_name, target_path, lines, bpm, channel)
-        if (preset.beats_per_bar is None) or (preset.nr_of_steps is None) or (preset.steps_per_beat is None) or (not preset.pattern):
+        preset = Preset(project_name, target_path, lines)
+        if (preset.beats_per_bar is None) or (preset.nr_of_steps is None) or (preset.steps_per_beat is None) or (
+                not preset.pattern):
             print("")
             continue
 
